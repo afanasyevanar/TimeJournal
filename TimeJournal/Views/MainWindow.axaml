@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TimeJournal.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TimeJournal.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="TimeJournal">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*, Auto">
+        <ScrollViewer Grid.Row="0" Margin="10">
+            <ItemsControl ItemsSource="{Binding Entries}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                            <TextBlock Grid.Column="0" 
+                                     Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                     Margin="0,0,10,0"
+                                     VerticalAlignment="Top"/>
+                            <TextBlock Grid.Column="1" 
+                                     Text="{Binding Text}"
+                                     TextWrapping="Wrap"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+        <TextBox Grid.Row="1"
+                 Text="{Binding CurrentText}"
+                 Watermark="Введите текст и нажмите Enter для сохранения или Shift+Enter для переноса строки..."
+                 AcceptsReturn="True"
+                 Margin="10">
+            <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding AddEntryCommand}"/>
+                <KeyBinding Gesture="Shift+Enter" Command="{Binding AddNewLineCommand}"/>
+            </TextBox.KeyBindings>
+        </TextBox>
+    </Grid>
+
+</Window>
