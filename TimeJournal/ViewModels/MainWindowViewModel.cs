@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.IO;
 using ReactiveUI;
 
 namespace TimeJournal.ViewModels;
@@ -15,6 +16,7 @@ public class MainWindowViewModel : ViewModelBase
         Entries = [];
         AddEntryCommand = ReactiveCommand.Create(AddEntry);
         AddNewLineCommand = ReactiveCommand.Create(AddNewLine);
+        SaveCommand = ReactiveCommand.Create(Save);
     }
 
     public string CurrentText
@@ -31,6 +33,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, Unit> AddEntryCommand { get; }
     public ReactiveCommand<Unit, Unit> AddNewLineCommand { get; }
+    public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 
     private void AddEntry()
     {
@@ -48,6 +51,22 @@ public class MainWindowViewModel : ViewModelBase
     private void AddNewLine()
     {
         CurrentText += Environment.NewLine;
+    }
+    
+    private void Save()
+    {
+        var savesDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "saves");
+        Directory.CreateDirectory(savesDirectory);
+        
+        var fileName = Path.Combine(savesDirectory, $"{DateTime.Now:yyyy-MM-dd}.txt");
+        
+        using var writer = new StreamWriter(fileName);
+        foreach (var entry in Entries)
+        {
+            writer.WriteLine($"[{entry.Timestamp:yyyy-MM-dd HH:mm:ss}]");
+            writer.WriteLine(entry.Text);
+            writer.WriteLine();
+        }
     }
 }
 

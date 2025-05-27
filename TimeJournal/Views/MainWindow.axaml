@@ -15,7 +15,14 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="*, Auto">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Сохранить" Command="{Binding SaveCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid RowDefinitions="*, Auto">
         <ScrollViewer Grid.Row="0" Margin="10">
             <ItemsControl ItemsSource="{Binding Entries}">
                 <ItemsControl.ItemTemplate>
@@ -38,12 +45,14 @@
                  Text="{Binding CurrentText}"
                  Watermark="Введите текст и нажмите Enter для сохранения или Shift+Enter для переноса строки..."
                  AcceptsReturn="True"
-                 Margin="10">
+                 Margin="10"
+				 VerticalAlignment="Stretch">
             <TextBox.KeyBindings>
                 <KeyBinding Gesture="Enter" Command="{Binding AddEntryCommand}"/>
                 <KeyBinding Gesture="Shift+Enter" Command="{Binding AddNewLineCommand}"/>
             </TextBox.KeyBindings>
         </TextBox>
     </Grid>
+    </DockPanel>
 
 </Window>
