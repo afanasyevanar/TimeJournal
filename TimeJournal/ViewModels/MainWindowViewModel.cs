@@ -2,14 +2,19 @@
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.IO;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace TimeJournal.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    public event EventHandler? TimerElapsedEvent;
+
     private string _currentText = string.Empty;
     private ObservableCollection<JournalEntry> _entries;
+    private readonly DispatcherTimer _windowTimer = new();
+    private bool _isTimerEnabled;
 
     public MainWindowViewModel()
     {
@@ -17,6 +22,10 @@ public class MainWindowViewModel : ViewModelBase
         AddEntryCommand = ReactiveCommand.Create(AddEntry);
         AddNewLineCommand = ReactiveCommand.Create(AddNewLine);
         SaveCommand = ReactiveCommand.Create(Save);
+        StartTimerCommand = ReactiveCommand.Create(StartTimer);
+        StopTimerCommand = ReactiveCommand.Create(StopTimer);
+        SetTimerIntervalCommand = ReactiveCommand.Create<int>(SetTimerInterval);
+        _windowTimer.Tick += TimerElapsed;
     }
 
     public string CurrentText
@@ -31,9 +40,29 @@ public class MainWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _entries, value);
     }
 
+    public bool IsTimerEnabled
+    {
+        get => _isTimerEnabled;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _isTimerEnabled, value);
+            if (_isTimerEnabled)
+            {
+                _windowTimer.Start();
+            } 
+            else
+            {
+                _windowTimer.Stop();
+            }
+        }
+    }
+
     public ReactiveCommand<Unit, Unit> AddEntryCommand { get; }
     public ReactiveCommand<Unit, Unit> AddNewLineCommand { get; }
     public ReactiveCommand<Unit, Unit> SaveCommand { get; }
+    public ReactiveCommand<Unit, Unit> StartTimerCommand { get; }
+    public ReactiveCommand<Unit, Unit> StopTimerCommand { get; }
+    public ReactiveCommand<int, Unit> SetTimerIntervalCommand { get; }
 
     private void AddEntry()
     {
@@ -67,6 +96,37 @@ public class MainWindowViewModel : ViewModelBase
             writer.WriteLine(entry.Text);
             writer.WriteLine();
         }
+    }
+    
+    private void StartTimer()
+    {
+        if (!IsTimerEnabled)
+        {
+            IsTimerEnabled = true;
+        }
+    }
+
+    private void StopTimer()
+    {
+        if (IsTimerEnabled)
+        {
+            IsTimerEnabled = false;
+        }
+    }
+
+    private void SetTimerInterval(int minutes)
+    {
+        _windowTimer.Interval = TimeSpan.FromMinutes(minutes);
+        if (IsTimerEnabled)
+        {
+            _windowTimer.Stop();
+            _windowTimer.Start();
+        }
+    }
+    
+    private void TimerElapsed(object? sender, EventArgs e)
+    {
+        TimerElapsedEvent?.Invoke(sender, e);
     }
 }
 

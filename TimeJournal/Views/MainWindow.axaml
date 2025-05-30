@@ -3,6 +3,7 @@
         xmlns:vm="using:TimeJournal.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TimeJournal.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -18,41 +19,70 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Файл">
-                <MenuItem Header="Сохранить" Command="{Binding SaveCommand}"/>
+                <MenuItem Header="Сохранить" Command="{Binding SaveCommand}" />
+            </MenuItem>
+            <MenuItem Header="Настройки">
+                <MenuItem Header="Таймер разворачивания">
+                    <MenuItem Header="Включить" Command="{Binding StartTimerCommand}" />
+                    <MenuItem Header="Выключить" Command="{Binding StopTimerCommand}" />
+                    <Separator />
+                    <MenuItem Header="Интервал">
+                        <MenuItem Header="10 минут" Command="{Binding SetTimerIntervalCommand}">
+                            <MenuItem.CommandParameter>
+                                <system:Int32>10</system:Int32>
+                            </MenuItem.CommandParameter>
+                        </MenuItem>
+                        <MenuItem Header="15 минут" Command="{Binding SetTimerIntervalCommand}">
+                            <MenuItem.CommandParameter>
+                                <system:Int32>15</system:Int32>
+                            </MenuItem.CommandParameter>
+                        </MenuItem>
+                        <MenuItem Header="30 минут" Command="{Binding SetTimerIntervalCommand}">
+                            <MenuItem.CommandParameter>
+                                <system:Int32>30</system:Int32>
+                            </MenuItem.CommandParameter>
+                        </MenuItem>
+                        <MenuItem Header="1 час" Command="{Binding SetTimerIntervalCommand}">
+                            <MenuItem.CommandParameter>
+                                <system:Int32>60</system:Int32>
+                            </MenuItem.CommandParameter>
+                        </MenuItem>
+                    </MenuItem>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
         <Grid RowDefinitions="*, Auto">
-        <ScrollViewer Grid.Row="0" Margin="10">
-            <ItemsControl ItemsSource="{Binding Entries}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="Auto, *" Margin="0,5">
-                            <TextBlock Grid.Column="0" 
-                                     Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
-                                     Margin="0,0,10,0"
-                                     VerticalAlignment="Top"/>
-                            <TextBlock Grid.Column="1" 
-                                     Text="{Binding Text}"
-                                     TextWrapping="Wrap"/>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-        
-        <TextBox Grid.Row="1"
-                 Text="{Binding CurrentText}"
-                 Watermark="Введите текст и нажмите Enter для сохранения или Shift+Enter для переноса строки..."
-                 AcceptsReturn="True"
-                 Margin="10"
-				 VerticalAlignment="Stretch">
-            <TextBox.KeyBindings>
-                <KeyBinding Gesture="Enter" Command="{Binding AddEntryCommand}"/>
-                <KeyBinding Gesture="Shift+Enter" Command="{Binding AddNewLineCommand}"/>
-            </TextBox.KeyBindings>
-        </TextBox>
-    </Grid>
+            <ScrollViewer Grid.Row="0" Margin="10">
+                <ItemsControl ItemsSource="{Binding Entries}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Timestamp, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Top" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Text}"
+                                           TextWrapping="Wrap" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <TextBox Grid.Row="1"
+                     Text="{Binding CurrentText}"
+                     Watermark="Введите текст и нажмите Enter для сохранения или Shift+Enter для переноса строки..."
+                     AcceptsReturn="True"
+                     Margin="10"
+                     VerticalAlignment="Stretch">
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding AddEntryCommand}" />
+                    <KeyBinding Gesture="Shift+Enter" Command="{Binding AddNewLineCommand}" />
+                </TextBox.KeyBindings>
+            </TextBox>
+        </Grid>
     </DockPanel>
 
 </Window>
