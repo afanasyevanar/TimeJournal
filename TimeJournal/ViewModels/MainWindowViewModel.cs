@@ -15,6 +15,7 @@ public class MainWindowViewModel : ViewModelBase
     private ObservableCollection<JournalEntry> _entries;
     private readonly DispatcherTimer _windowTimer = new();
     private bool _isTimerEnabled;
+    private int _timerInterval = 10;
 
     public MainWindowViewModel()
     {
@@ -26,6 +27,7 @@ public class MainWindowViewModel : ViewModelBase
         StopTimerCommand = ReactiveCommand.Create(StopTimer);
         SetTimerIntervalCommand = ReactiveCommand.Create<int>(SetTimerInterval);
         _windowTimer.Tick += TimerElapsed;
+        _windowTimer.Interval = TimeSpan.FromMinutes(_timerInterval);
     }
 
     public string CurrentText
@@ -55,6 +57,12 @@ public class MainWindowViewModel : ViewModelBase
                 _windowTimer.Stop();
             }
         }
+    }
+
+    public int TimerInterval
+    {
+        get => _timerInterval;
+        set => this.RaiseAndSetIfChanged(ref _timerInterval, value);
     }
 
     public ReactiveCommand<Unit, Unit> AddEntryCommand { get; }
@@ -116,6 +124,7 @@ public class MainWindowViewModel : ViewModelBase
 
     private void SetTimerInterval(int minutes)
     {
+        TimerInterval = minutes;
         _windowTimer.Interval = TimeSpan.FromMinutes(minutes);
         if (IsTimerEnabled)
         {

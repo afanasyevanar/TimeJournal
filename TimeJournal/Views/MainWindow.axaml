@@ -7,13 +7,13 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TimeJournal.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/pen-to-square.ico"
         Title="TimeJournal">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <DockPanel>
@@ -22,7 +22,7 @@
                 <MenuItem Header="Сохранить" Command="{Binding SaveCommand}" />
             </MenuItem>
             <MenuItem Header="Настройки">
-                <MenuItem Header="Таймер разворачивания">
+                <MenuItem Header="Таймер">
                     <MenuItem Header="Включить" Command="{Binding StartTimerCommand}" />
                     <MenuItem Header="Выключить" Command="{Binding StopTimerCommand}" />
                     <Separator />
@@ -51,6 +51,19 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
+
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,5">
+            <Border Background="{Binding IsTimerEnabled, Converter={StaticResource BoolToColorConverter}}"
+                    CornerRadius="4"
+                    Padding="8,4"
+                    Margin="0,0,10,0">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <TextBlock Text="{Binding TimerInterval, StringFormat='Интервал: {0} мин'}"
+                               Foreground="White"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
 
         <Grid RowDefinitions="*, Auto">
             <ScrollViewer Grid.Row="0" Margin="10">
