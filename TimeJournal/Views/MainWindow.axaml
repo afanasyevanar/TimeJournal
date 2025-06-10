@@ -89,7 +89,8 @@
                      Watermark="Введите текст и нажмите Enter для сохранения или Shift+Enter для переноса строки..."
                      AcceptsReturn="True"
                      Margin="10"
-                     VerticalAlignment="Stretch">
+                     VerticalAlignment="Stretch"
+                     Name="MainTextBox">
                 <TextBox.KeyBindings>
                     <KeyBinding Gesture="Enter" Command="{Binding AddEntryCommand}" />
                     <KeyBinding Gesture="Shift+Enter" Command="{Binding AddNewLineCommand}" />

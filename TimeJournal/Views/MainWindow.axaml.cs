@@ -11,18 +11,24 @@ public partial class MainWindow : Window
         InitializeComponent();
         
         // скорее всего DataContext тут будет null и код не выполнится
+        AttachHandlersToModelView();
+        
+        DataContextChanged += (_, _) =>
+        {
+            AttachHandlersToModelView();
+        };
+    }
+
+    private void AttachHandlersToModelView()
+    {
         if (DataContext is MainWindowViewModel mainWindowViewModel)
         {
             mainWindowViewModel.TimerElapsedEvent += OnTimerElapsed;
-        }
-        
-        DataContextChanged += (sender, e) =>
-        {
-            if (DataContext is MainWindowViewModel viewModel)
+            mainWindowViewModel.NewLineEvent += (sender, args) =>
             {
-                viewModel.TimerElapsedEvent += OnTimerElapsed;
-            }
-        };
+                MainTextBox.CaretIndex = MainTextBox.Text?.Length ?? 0;
+            };
+        }
     }
 
     private void OnTimerElapsed(object? sender, EventArgs e)

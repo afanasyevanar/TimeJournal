@@ -10,6 +10,7 @@ namespace TimeJournal.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     public event EventHandler? TimerElapsedEvent;
+    public event EventHandler? NewLineEvent;
 
     private string _currentText = string.Empty;
     private ObservableCollection<JournalEntry> _entries;
@@ -88,6 +89,7 @@ public class MainWindowViewModel : ViewModelBase
     private void AddNewLine()
     {
         CurrentText += Environment.NewLine;
+        NewLineEvent?.Invoke(this, EventArgs.Empty);
     }
     
     private void Save()
